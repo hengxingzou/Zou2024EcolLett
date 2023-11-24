@@ -16,20 +16,12 @@ All simulations were run in R version 4.2.1.
 - `GenerateData.R` contains code for generating data using the mechanistic plant-soil feedback model.
 - `GenerateData_MultipleParams.R` contains code for generating data using randomly selected parameters; this is required for the sensitivity analysis (see Appendix of the manuscript).
 - `ModelFitting.R` contains all code for fitting the simulated data to phenomenological models of higher-order interactions.
-- `Analysis.Rmd` contains code for creating all figures in the main text and Appendix.
+- `Analysis_Tidy.Rmd` contains code for creating all figures in the main text and Appendix.
 
 # Data
 
-- `SavedMetacoms` contains initial metacommunities in `.csv` files. You can also generate metacommunities in `FiguresReadMe.Rmd`, but resulting figures will likely be different because of the random generation process. 
-- `Dec17_5spp.RData` contains generated data from all simulations in the main text. This is a pre-packaged R dataset that includes all variables in the environment. To load the dataset, simply double click while `Functions_SpatialBH.R` and `FiguresReadMe.Rmd` are opened in RStudio. Loading `Dec17_5spp.RData` will load the following key datasets:
-  * **Metacommunities (2 data frames)**: `M_1` and `M_2`. See `SavedMetacoms`.
-  * **Population dynamics (4 data frames)**: `lowdisp_1`, `lowdisp_2`, `highdisp_1`, `highdisp_2`. Thess are population dynamics of all patches and all repetitions. `low` or `high` denotes low or high dispersal rates. `_1` and `_2` denote scenarios (1. Equal Initials; 2. First Colonizer). They contain scenarios with and without trait-dependent priority effects.
-  * **Dispersal-diversity relationships (2 data frames)**: `all_Sce1`, `all_Sce2`. These contain alpha, beta and gamma diversity under a range of dispersal rates of all repetitions. `Sce1` and `Sce2` refer to scenarios (1. Equal Initials; 2. First Colonizer). They contain scenarios with and without trait-dependent priority effects.
-  * **Dispersal-diversity relationships at different variations (6 data frames)**: `all_lowvar_1`, `all_lowvar_2`, `all_midvar_1`, `all_midvar_2`, `all_highvar_1`, `all_highvar_2`. These contain alpha, beta and gamma diversity under a range of dispersal rates, three different variations of emergence times, and of all repetitions. `lowvar`, `midvar`, and `highvar` denote the magnitude of variations. `_1` and `_2` denote scenarios (1. Equal Initials; 2. First Colonizer). They contain scenarios with and without trait-dependent priority effects.
-
-# Reproducing Figures
-
-- Unarchive the provided `SavedMetacoms.zip`.
-- Make sure all files, including the `SavedMetacoms` folder, are under the same directory.
-- Open `FiguresReadMe.Rmd`, then load `Dec17_5spp.RData`.
-- Follow specific instructions in `FiguresReadMe.Rmd` to generate figures in the main text, or change model parameters to produce figures in the appendix.
+The `Data` directory contains four subdirectories:
+- `Standard` is the default directory that contains all results in the main text.
+- `Long` contains data from simulations with longer years and fixed interval between plant $i$ and $j$. This set of simulations is only performed with three-plant models.
+- `AlternativePerc` contains data from simulations with different percentages of overlap in microbiomes. This set of simulations is only performed with two-plant models.
+- `Repetition` contains *fitted interaction coefficients* from simulations with random parameters. This set of simulations is only performed with three-plant models.
