@@ -1,6 +1,9 @@
 source("Functions_PSF.R")
 
 data_dir = "Data/"
+# If using standard parameters, change data_dir to "Data/Standard/"
+# If using alternative parameters, change data_dir to "Data/AlternativePerc/"
+# If simulating longer years, change data_dir to "Data/Long/", and change code according to specific comments
 
 
 ########## Shared Parameters Among All Simulations ##########
@@ -220,6 +223,10 @@ write_csv(ij_co_rs, paste0(data_dir, "ij_co_rs.csv"))
 ########## Three Plants, Shared Parameters ##########
 
 
+# If simulating long years, uncomment below
+# Long-year simulation only uses three-plant model
+# tau = 18
+
 # Initial conditions
 
 seeds_ini = rep(seeds_ini_single, nspp)
@@ -229,17 +236,14 @@ microbes_ini = rep(microbes_ini_single, nspp)
 
 initpop_combns = expand_grid(seeds_grad, seeds_grad, seeds_grad)
 
-# Full combinations of arrival times
-
-# arriv_combns = expand_grid(seq(0, max_arriv, 1), seq(0, max_arriv, 1), seq(0, max_arriv, 1))
-
-# Three scenarios only (before, after, between, equal intervals; faster)
+# Three scenarios only (before, after, between; faster)
 
 arriv_combns = rbind(tibble(i = 0, j = 0, k = seq(0, max_arriv, 1)),
                      tibble(i = max_arriv, j = max_arriv, k = seq(0, max_arriv, 1)),
                      tibble(i = 0, j = max_arriv, k = seq(0, max_arriv, 1))) %>%
   distinct()
 
+# If simulating long year, uncomment below
 # Longer year with fixed interval between i and j
 
 # arriv_combns = rbind(tibble(i = 5, j = 11, k = seq(0, 11)))
