@@ -3,7 +3,8 @@ source("ModelFitting.R")
 
 data_dir = "Data/MultipleParams"
 
-rep = 5
+# 100 repetitions take a while even data generation and model fitting are paralellized
+rep = 100
 
 
 ########## Shared Parameters Among All Simulations ##########
@@ -77,14 +78,6 @@ nls_ctrl = nls.control(maxiter = 1000, tol = 1e-8, minFactor = (1/10)*(1/1024),
 
 alphabetas_nc_reps = foreach (r = 1:rep, .combine = rbind) %dopar% {
   
-  # Model parameters, randomly generated
-  
-  # para = tibble(d = runif(nspp, 0.1, 0.2), # plant intraspecific competition
-  #               mu = runif(nspp, 0.1, 0.5), # microbe intraspecific competition
-  #               surv_y = runif(nspp, 0.1, 0.5), # end-of-year microbe survival
-  #               lambda = runif(nspp, 2, 4) # plant fecundity
-  # )
-  
   # Cultivation and feedback rates, randomly generated
   
   m = runif(1, -0.5, -0.1)
@@ -130,14 +123,6 @@ alphabetas_nc_reps = foreach (r = 1:rep, .combine = rbind) %dopar% {
 
 alphabetas_al_reps = foreach (r = 1:rep, .combine = rbind) %dopar% {
   
-  # Model parameters, randomly generated
-  
-  # para = tibble(d = runif(nspp, 0.1, 0.2), # plant intraspecific competition
-  #               mu = runif(nspp, 0.1, 0.5), # microbe intraspecific competition
-  #               surv_y = runif(nspp, 0.1, 0.5), # end-of-year microbe survival
-  #               lambda = runif(nspp, 2, 4) # plant fecundity
-  # )
-  
   # Cultivation and feedback rates, randomly generated
   
   m = runif(1, -0.4, -0.2)
@@ -182,14 +167,6 @@ alphabetas_al_reps = foreach (r = 1:rep, .combine = rbind) %dopar% {
 
 
 alphabetas_co_reps = foreach (r = 1:rep, .combine = rbind) %dopar% {
-  
-  # Model parameters, randomly generated
-  
-  # para = tibble(d = runif(nspp, 0.1, 0.2), # plant intraspecific competition
-  #               mu = runif(nspp, 0.1, 0.5), # microbe intraspecific competition
-  #               surv_y = runif(nspp, 0.1, 0.5), # end-of-year microbe survival
-  #               lambda = runif(nspp, 2, 4) # plant fecundity
-  # )
   
   # Cultivation and feedback rates, randomly generated
   
