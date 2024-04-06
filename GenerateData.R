@@ -45,7 +45,7 @@ v = 0.3
 
 # All equal feedback rates
 
-# m_matrix = matrix(rep(m, nspp*nspp), nrow = nspp, byrow = T)
+m_matrix = matrix(rep(m, nspp*nspp), nrow = nspp, byrow = T)
 
 # Microbiome specializes on its host (m_ij_small)
 
@@ -54,8 +54,8 @@ v = 0.3
 
 # Microbiome specializes on others (m_ii_small)
 
-m_matrix = matrix(rep(m, nspp*nspp), nrow = nspp, byrow = T)
-diag(m_matrix) = -0.1
+# m_matrix = matrix(rep(m, nspp*nspp), nrow = nspp, byrow = T)
+# diag(m_matrix) = -0.1
 
 
 # For "Standard", use percent_ic = 0.3 for low and percent_ic = 0.6 for high overlap
