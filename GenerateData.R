@@ -1,9 +1,6 @@
 source("Functions_PSF.R")
 
-data_dir = "Data/"
-# If using standard parameters, change data_dir to "Data/Standard/"
-# If using alternative parameters, change data_dir to "Data/AlternativePerc/"
-# If simulating longer years, change data_dir to "Data/Long/", and change code according to specific comments
+data_dir = "Data/m_ii_small/"
 
 
 ########## Shared Parameters Among All Simulations ##########
@@ -40,16 +37,28 @@ para = tibble(d = rep(0.1, nspp), # plant intraspecific competition
 tau = 12
 lc_len = 6
 max_arriv = tau-lc_len-1
-# max_arriv = 5
 
 # Cultivation and feedback rates
 
 m = -0.3
 v = 0.3
 
-m_matrix = matrix(rep(m, nspp*nspp), nrow = nspp, byrow = T)
+# All equal feedback rates
 
-# For "AlternativePerc", use percent_ic = 0.4 for low and percent_ic = 0.8 for high overlap
+# m_matrix = matrix(rep(m, nspp*nspp), nrow = nspp, byrow = T)
+
+# Microbiome specializes on its host (m_ij_small)
+
+# m_matrix = matrix(rep(-0.1, nspp*nspp), nrow = nspp, byrow = T)
+# diag(m_matrix) = rep(m, nspp)
+
+# Microbiome specializes on others (m_ii_small)
+
+m_matrix = matrix(rep(m, nspp*nspp), nrow = nspp, byrow = T)
+diag(m_matrix) = -0.1
+
+
+# For "Standard", use percent_ic = 0.3 for low and percent_ic = 0.6 for high overlap
 
 
 ########## Two Plants, Shared Parameters ##########
@@ -74,7 +83,6 @@ arriv_combns_ij = expand_grid(seq(0, max_arriv, 1), seq(0, max_arriv, 1), 0)
 # in two-plant models, first generate 2*2 matrix, then append 0 to the third row and column
 
 percent_ic = 0
-v_matrix = diag(nspp-1)*rep(v, nspp-1)
 v_matrix = diag(nspp-1)*rep(v, nspp-1)*(1-percent_ic)
 v_matrix[lower.tri(v_matrix)] = percent_ic*v/(nspp-2)
 v_matrix[upper.tri(v_matrix)] = percent_ic*v/(nspp-2)
@@ -124,8 +132,7 @@ write_csv(ij_nc_rs, paste0(data_dir, "ij_nc_rs.csv"))
 # To generate v_matrix that is compatible to dimensions of other data structures
 # in two-plant models, first generate 2*2 matrix, then append 0 to the third row and column
 
-percent_ic = 0.4
-v_matrix = diag(nspp-1)*rep(v, nspp-1)
+percent_ic = 0.25
 v_matrix = diag(nspp-1)*rep(v, nspp-1)*(1-percent_ic)
 v_matrix[lower.tri(v_matrix)] = percent_ic*v/(nspp-2)
 v_matrix[upper.tri(v_matrix)] = percent_ic*v/(nspp-2)
@@ -175,8 +182,7 @@ write_csv(ij_al_rs, paste0(data_dir, "ij_al_rs.csv"))
 # To generate v_matrix that is compatible to dimensions of other data structures
 # in two-plant models, first generate 2*2 matrix, then append 0 to the third row and column
 
-percent_ic = 0.8
-v_matrix = diag(nspp-1)*rep(v, nspp-1)
+percent_ic = 0.5
 v_matrix = diag(nspp-1)*rep(v, nspp-1)*(1-percent_ic)
 v_matrix[lower.tri(v_matrix)] = percent_ic*v/(nspp-2)
 v_matrix[upper.tri(v_matrix)] = percent_ic*v/(nspp-2)
@@ -223,10 +229,6 @@ write_csv(ij_co_rs, paste0(data_dir, "ij_co_rs.csv"))
 ########## Three Plants, Shared Parameters ##########
 
 
-# If simulating long years, uncomment below
-# Long-year simulation only uses three-plant model
-# tau = 18
-
 # Initial conditions
 
 seeds_ini = rep(seeds_ini_single, nspp)
@@ -236,14 +238,17 @@ microbes_ini = rep(microbes_ini_single, nspp)
 
 initpop_combns = expand_grid(seeds_grad, seeds_grad, seeds_grad)
 
-# Three scenarios only (before, after, between; faster)
+# Full combinations of arrival times
+
+# arriv_combns = expand_grid(seq(0, max_arriv, 1), seq(0, max_arriv, 1), seq(0, max_arriv, 1))
+
+# Three scenarios only (before, after, between, equal intervals; faster)
 
 arriv_combns = rbind(tibble(i = 0, j = 0, k = seq(0, max_arriv, 1)),
                      tibble(i = max_arriv, j = max_arriv, k = seq(0, max_arriv, 1)),
                      tibble(i = 0, j = max_arriv, k = seq(0, max_arriv, 1))) %>%
   distinct()
 
-# If simulating long year, uncomment below
 # Longer year with fixed interval between i and j
 
 # arriv_combns = rbind(tibble(i = 5, j = 11, k = seq(0, 11)))
@@ -253,7 +258,6 @@ arriv_combns = rbind(tibble(i = 0, j = 0, k = seq(0, max_arriv, 1)),
 
 
 percent_ic = 0
-v_matrix = diag(nspp)*rep(v, nspp)
 v_matrix = diag(nspp)*rep(v, nspp)*(1-percent_ic)
 v_matrix[lower.tri(v_matrix)] = percent_ic*v/(nspp-1)
 v_matrix[upper.tri(v_matrix)] = percent_ic*v/(nspp-1)
@@ -298,8 +302,7 @@ write_csv(ijk_nc_rs, paste0(data_dir, "ijk_nc_rs.csv"))
 ########## Three Species, Low Overlap ##########
 
 
-percent_ic = 0.2
-v_matrix = diag(nspp)*rep(v, nspp)
+percent_ic = 0.25
 v_matrix = diag(nspp)*rep(v, nspp)*(1-percent_ic)
 v_matrix[lower.tri(v_matrix)] = percent_ic*v/(nspp-1)
 v_matrix[upper.tri(v_matrix)] = percent_ic*v/(nspp-1)
@@ -344,8 +347,7 @@ write_csv(ijk_al_rs, paste0(data_dir, "ijk_al_rs.csv"))
 ########## Three Species, High Overlap ##########
 
 
-percent_ic = 0.8
-v_matrix = diag(nspp)*rep(v, nspp)
+percent_ic = 0.5
 v_matrix = diag(nspp)*rep(v, nspp)*(1-percent_ic)
 v_matrix[lower.tri(v_matrix)] = percent_ic*v/(nspp-1)
 v_matrix[upper.tri(v_matrix)] = percent_ic*v/(nspp-1)
