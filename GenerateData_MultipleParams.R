@@ -3,8 +3,7 @@ source("ModelFitting.R")
 
 data_dir = "Data/MultipleParams"
 
-# 100 repetitions take a while even data generation and model fitting are paralellized
-rep = 100
+rep = 5 # actual repetitions on the cluster: 100
 
 
 ########## Shared Parameters Among All Simulations ##########
@@ -53,7 +52,7 @@ initpop_combns = expand_grid(seeds_grad, seeds_grad, seeds_grad)
 
 # Arrival time combinations
 
-arriv_combns = expand_grid(seq(0, max_arriv, 1), seq(0, max_arriv, 1), seq(0, max_arriv, 1))
+# arriv_combns = expand_grid(seq(0, max_arriv, 1), seq(0, max_arriv, 1), seq(0, max_arriv, 1))
 
 arriv_combns = rbind(tibble(i = 0, j = 0, k = seq(0, max_arriv, 1)),
                      tibble(i = max_arriv, j = max_arriv, k = seq(0, max_arriv, 1)),
@@ -78,15 +77,31 @@ nls_ctrl = nls.control(maxiter = 1000, tol = 1e-8, minFactor = (1/10)*(1/1024),
 
 alphabetas_nc_reps = foreach (r = 1:rep, .combine = rbind) %dopar% {
   
-  # Cultivation and feedback rates, randomly generated
+  # Cultivation and feedback rates, randomly generated from uniform distributions
   
   m = runif(1, -0.5, -0.1)
   v = runif(1, 0.1, 0.3)
-  
+
   m_matrix = matrix(rep(m, nspp*nspp), nrow = nspp, byrow = T)
   
+  # Randomly generated feedback rates, with the ratio of m_xx/m_yx informed by Yan et al. 2022
+  # See FeedbackRatios.R for details
+  # For simplification, draw only one ratio for all three species
+  # In this scenario v is not randomly drawn to highlight the effect of m_xx/m_yx
+  
+  # m_ratio = rlnorm(1, meanlog = 0.142, sdlog = 1.087)
+  # m_total = -0.5
+  # v = 0.3
+  
+  # Percentage of interspecific feedback (m_yx in total m from plant x)
+  # percent_im = 1 / (1+m_ratio)
+  # m_matrix = diag(nspp)*rep(m_total, nspp)*(1-percent_im)
+  # m_matrix[lower.tri(m_matrix)] = percent_im*m_total/(nspp-1)
+  # m_matrix[upper.tri(m_matrix)] = percent_im*m_total/(nspp-1)
+  
+  # Construct v matrix
+  
   percent_ic = 0
-  v_matrix = diag(nspp)*rep(v, nspp)
   v_matrix = diag(nspp)*rep(v, nspp)*(1-percent_ic)
   v_matrix[lower.tri(v_matrix)] = percent_ic*v/(nspp-1)
   v_matrix[upper.tri(v_matrix)] = percent_ic*v/(nspp-1)
@@ -130,8 +145,23 @@ alphabetas_al_reps = foreach (r = 1:rep, .combine = rbind) %dopar% {
   
   m_matrix = matrix(rep(m, nspp*nspp), nrow = nspp, byrow = T)
   
-  percent_ic = 0.2
-  v_matrix = diag(nspp)*rep(v, nspp)
+  # Randomly generated feedback rates, with the ratio of m_xx/m_yx informed by Yan et al. 2022
+  # See FeedbackRatios.R for details
+  # For simplification, draw only one ratio for all three species
+  # In this scenario v is not randomly drawn to highlight the effect of m_xx/m_yx
+  
+  # m_ratio = rlnorm(1, meanlog = 0.142, sdlog = 1.087)
+  # m_total = -0.5
+  # v = 0.3
+  
+  # Percentage of interspecific feedback (m_yx in total m from plant x)
+  # percent_im = 1 / (1+m_ratio)
+  # m_matrix = diag(nspp)*rep(m_total, nspp)*(1-percent_im)
+  # m_matrix[lower.tri(m_matrix)] = percent_im*m_total/(nspp-1)
+  # m_matrix[upper.tri(m_matrix)] = percent_im*m_total/(nspp-1)
+  
+  # Construct v matrix
+  percent_ic = 0.3
   v_matrix = diag(nspp)*rep(v, nspp)*(1-percent_ic)
   v_matrix[lower.tri(v_matrix)] = percent_ic*v/(nspp-1)
   v_matrix[upper.tri(v_matrix)] = percent_ic*v/(nspp-1)
@@ -175,8 +205,23 @@ alphabetas_co_reps = foreach (r = 1:rep, .combine = rbind) %dopar% {
   
   m_matrix = matrix(rep(m, nspp*nspp), nrow = nspp, byrow = T)
   
-  percent_ic = 0.8
-  v_matrix = diag(nspp)*rep(v, nspp)
+  # Randomly generated feedback rates, with the ratio of m_xx/m_yx informed by Yan et al. 2022
+  # See FeedbackRatios.R for details
+  # For simplification, draw only one ratio for all three species
+  # In this scenario v is not randomly drawn to highlight the effect of m_xx/m_yx
+  
+  # m_ratio = rlnorm(1, meanlog = 0.142, sdlog = 1.087)
+  # m_total = -0.5
+  # v = 0.3
+  
+  # Percentage of interspecific feedback (m_yx in total m from plant x)
+  # percent_im = 1 / (1+m_ratio)
+  # m_matrix = diag(nspp)*rep(m_total, nspp)*(1-percent_im)
+  # m_matrix[lower.tri(m_matrix)] = percent_im*m_total/(nspp-1)
+  # m_matrix[upper.tri(m_matrix)] = percent_im*m_total/(nspp-1)
+  
+  # Construct v matrix
+  percent_ic = 0.6
   v_matrix = diag(nspp)*rep(v, nspp)*(1-percent_ic)
   v_matrix[lower.tri(v_matrix)] = percent_ic*v/(nspp-1)
   v_matrix[upper.tri(v_matrix)] = percent_ic*v/(nspp-1)
@@ -206,3 +251,11 @@ alphabetas_co_reps = foreach (r = 1:rep, .combine = rbind) %dopar% {
     mutate(rep = r)
   
 }
+
+
+########## Write Data ##########
+
+
+write_csv(alphabetas_al_reps, paste0(data_dir, "alphabetas_al_reps.csv"))
+write_csv(alphabetas_nc_reps, paste0(data_dir, "alphabetas_nc_reps.csv"))
+write_csv(alphabetas_co_reps, paste0(data_dir, "alphabetas_co_reps.csv"))
