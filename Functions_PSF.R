@@ -23,6 +23,19 @@ get_timeseq = function(nspp, bound = NULL, var = 0, even = T) {
   return(timeseq + abs(min(timeseq))) # normalize minimum to 0
 }
 
+# # Delta t matrix
+# 
+# init_deltap_matrix = function(mean_times) {
+#   mean_times = (mean_times - min(mean_times))
+#   deltat_matrix = matrix(0, nrow = length(mean_times), ncol = length(mean_times))
+#   for (i in 1:length(mean_times)) {
+#     for (j in 1:length(mean_times)) {
+#       deltat_matrix[i, j] = mean_times[j]-mean_times[i]
+#     }
+#   }
+#   return(deltat_matrix)
+# }
+
 # Get emergence vector (a) within a season
 
 get_emergence = function(timeseq, tau, lc_len) { # lc_len: length of plant life cycle
@@ -54,7 +67,12 @@ model = function(plants, seeds, microbes, para, m_matrix, v_matrix, timeseq, tau
              \n coercing into nearest multiples")
   }
   
+  # Initial density of microbes at the beginning of each season
+  # microbes_ini = microbes
+  
   b = rep(ifelse(1:tau %% tau == 0, 0, 1), times = t %/% tau)
+  # all_pop = tibble(Plants = plants, Seeds = seeds, Microbes = microbes) %>% 
+  #             mutate(Time = 0, Species = 1:length(plants)) # if filling population at time 0
   all_pop = tibble()
   
   for (p in 1:t) {
@@ -72,10 +90,13 @@ model = function(plants, seeds, microbes, para, m_matrix, v_matrix, timeseq, tau
       (1-c_matrix[, counter])*plants*(1 - para$d*plants + as.numeric(m_matrix %*% microbes)) # process within life cycle
     
     # Seeds
-    new_seeds = c_matrix[, counter]*para$lambda*plants +
+    new_seeds = c_matrix[, counter]*para$lambda*plants + #*(1-plants/para$K) + # reproduction
       (1-c_matrix[, counter])*(1-a_matrix[, counter])*seeds # maintenance of seed bank
     
     # Microbes
+    # new_microbes = b[p]*microbes*(1 + as.numeric(v_matrix %*% plants) - para$mu * microbes) +
+    #   (1-b[p])*microbes_ini # reset to initial density
+    # new_microbes = microbes*(1 + as.numeric(v_matrix %*% plants) - para$mu * microbes) # density carries over
     new_microbes = b[p]*microbes*(1 + as.numeric(v_matrix %*% plants) - para$mu * microbes) +
       (1-b[p])*microbes*para$surv_y # density carries over with a mortality
 
