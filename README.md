@@ -1,8 +1,8 @@
 This repository contains public code for the manuscript:
 
-Zou, Heng-Xing, Xinyi Yan, and Volker HW Rudolf. 2023. "Time-dependent Interaction Modification Generated from Plant-soil Feedback." *bioRXiv*. [https://doi.org/10.1101/2023.11.03.565336](https://doi.org/10.1101/2023.11.03.565336)
+Zou, Heng-Xing, Xinyi Yan, and Volker HW Rudolf. 2024. "Time-dependent Interaction Modification Generated from Plant-soil Feedback." *Ecology Letters*. [https://onlinelibrary.wiley.com/doi/10.1111/ele.14432]([https://doi.org/10.1101/2023.11.03.565336](https://onlinelibrary.wiley.com/doi/10.1111/ele.14432))
 
-For any questions, please [contact Heng-Xing Zou](hengxingzou@rice.edu)
+For any questions, please [contact Heng-Xing Zou](hxzou.ecology@gmail.edu)
 
 # Abstract
 
